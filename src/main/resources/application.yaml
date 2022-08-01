@@ -1,2 +1,5 @@
 server:
   port: 8082
+
+elasticsearch:
+  hostname: 172.20.243.7

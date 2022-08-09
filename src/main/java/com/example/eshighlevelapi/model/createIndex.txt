@@ -1,0 +1,36 @@
+PUT http://172.20.243.8:9200/sys_menu_log
+{
+  "mappings": {
+    "properties": {
+      "name":{
+        "type": "keyword",
+        "copy_to": "all"
+      },
+      "mobile":{
+        "type": "keyword",
+        "copy_to": "all"
+      },
+      "email":{
+        "type": "keyword",
+        "copy_to": "all"
+      },
+      "menu_name":{
+        "type": "text",
+        "analyzer": "ik_smart",
+        "copy_to": "all"
+      },
+      "menu_time":{
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+      },
+      "menu_url":{
+        "type": "text",
+        "analyzer": "standard",
+        "copy_to": "all"
+      },
+      "all": {
+        "type": "text"
+      }
+    }
+  }
+}

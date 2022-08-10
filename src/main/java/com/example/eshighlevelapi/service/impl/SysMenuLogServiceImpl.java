@@ -74,8 +74,8 @@ public class SysMenuLogServiceImpl implements SysMenuLogService {
         //如果要多个字段高亮,这项要为false
         highlightBuilder.requireFieldMatch(false);
         //高亮设置
-//        highlightBuilder.preTags("<span>");
-//        highlightBuilder.postTags("</span>");
+        highlightBuilder.preTags("<span style='color:red'>");
+        highlightBuilder.postTags("</span>");
 
         //下面这两项,如果你要高亮如文字内容等有很多字的字段,必须配置,不然会导致高亮不全,文章内容缺失等
         //最大高亮分片数

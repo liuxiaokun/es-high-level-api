@@ -3,3 +3,8 @@ server:
 
 elasticsearch:
   hostname: 172.20.243.7
+
+spring:
+  web:
+    resources:
+      static-locations: classpath:/static/,classpath:/templates/

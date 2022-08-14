@@ -36,7 +36,7 @@ public class AggregationTest {
         // 2，dsl
         //不需要文档，只要聚合
         searchRequest.source().size(0);
-        // 对字段进行聚合
+        // 对字段进行聚合,此段可以重复多次，对于多个进行聚合。
         searchRequest.source().aggregation(AggregationBuilders.terms("mobileAggr")
                 .field("mobile").size(10));
 

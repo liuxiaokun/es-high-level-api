@@ -14,6 +14,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
@@ -21,6 +22,7 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,11 +61,19 @@ public class SysMenuLogServiceImpl implements SysMenuLogService {
 
     @Override
     public List<SysMenuLog> search(SearchDTO searchDTO) {
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+        boolQueryBuilder.must(QueryBuilders.multiMatchQuery(searchDTO.getKeyword(), "name", "email", "mobile", "menu_name", "menu_url"));
+        boolQueryBuilder.filter(QueryBuilders.rangeQuery("menu_time").gt(searchDTO.getStartDate().getTime())
+                .lte(searchDTO.getEndDate().getTime()));
+
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.query(QueryBuilders.multiMatchQuery(searchDTO.getKeyword(), "name", "email", "mobile", "menu_name", "menu_url"));
+//        sourceBuilder.query(QueryBuilders.rangeQuery("menu_time").gt(searchDTO.getStartDate().getTime())
+//                .lte(searchDTO.getEndDate().getTime()));
         // 分页
         sourceBuilder.from((searchDTO.getPageNum() - 1) * searchDTO.getPageSize());
         sourceBuilder.size(searchDTO.getPageSize());
+        sourceBuilder.sort("mobile", SortOrder.DESC);
+        sourceBuilder.sort("name", SortOrder.DESC);
 
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("name");
@@ -86,6 +96,7 @@ public class SysMenuLogServiceImpl implements SysMenuLogService {
         sourceBuilder.highlighter(highlightBuilder);
         SearchRequest searchRequest = new SearchRequest("sys_menu_log");
         searchRequest.source(sourceBuilder);
+        searchRequest.source().query(boolQueryBuilder);
 
         SearchResponse response = null;
         try {
